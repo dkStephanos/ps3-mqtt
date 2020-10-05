@@ -1,2 +1,4 @@
 ps3-mqtt-dashboard/node_modules/*
 ps3-mqtt-dashboard/package-lock.json
+node_modules/
+package-lock.json
