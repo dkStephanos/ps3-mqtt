@@ -1,11 +1,12 @@
-const HID = require('node-hid');			
+const HID = require('node-hid');			//Imports library required for interfacing with ps3 controller
 
-const device = new HID.HID(0x54c, 0x268);
+const device = new HID.HID(0x54c, 0x268);	//creates instance of the HID device with specified vendor and product ID's
 
-device.inFunction = receiveData;
+device.inFunction = receiveData;		//Specifies the input function for our device as receiveData
 
-device.read(device.inFunction.bind(device));
+device.read(device.inFunction.bind(device));		//Binds the input function to the device and calls read, enabling us to start reading in input
 
+//The callback to be executed upon recieving data
 function receiveData(err, data)
 {
  // Handle any errors that occur because of the read() function
