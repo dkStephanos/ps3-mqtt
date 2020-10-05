@@ -1,18 +1,43 @@
-const HID = require('node-hid');			//Imports library required for interfacing with ps3 controller
+const HID = require('node-hid');
 
-const device = new HID.HID(0x54c, 0x268);	//creates instance of the HID device with specified vendor and product ID's
+const mqtt = require('mqtt');
 
-device.inFunction = receiveData;		//Specifies the input function for our device as receiveData
+const options = {
+	username: 'koiserve',
+	password: 'Tarnoff',
+};
 
-device.read(device.inFunction.bind(device));		//Binds the input function to the device and calls read, enabling us to start reading in input
+const client = mqtt.connect('mqtt://192.168.1.107:1883', options);
 
-//The callback to be executed upon recieving data
-function receiveData(err, data)
-{
- // Handle any errors that occur because of the read() function
- if(err) console.log("Error received when receiving data”, err);
- // Handle the receipt of the data when it comes from the USB device
- console.log('Received data: ', data);
- // Call read() again to capture the next packet of data
- this.read(this.inFunction.bind(this));
+const device = new HID.HID(0x54c, 0x268);
+
+client.on('connect', function() {
+	console.log('\nPi MQTT client connected to broker.\n');
+	client.subscribe('pub/data', function(err) {
+		if(err) throw "Error description:  " + err;
+	});
+});
+
+
+device.inFunction = receiveData;
+
+device.read(device.inFunction.bind(device))
+
+directionButtons = 0;
+namedButtons = 0;
+
+function receiveData(err, data) {
+	if(err) console.log("Error received when receiving data", err);
+	
+	console.log('Recieved data: ', data);
+	if(directionButtons !== data[2] || namedButtons !== data[3]) {
+		client.publish('pub/data', data[2].toString(2).padStart(8, '0') + ':' + data[3].toString(2).padStart(8, '0'), function(err) {
+			if(err) throw "Error description:  " + err;
+		});
+	}
+
+	directionButtons = data[2];
+	namedButtons = data[3];
+
+	this.read(this.inFunction.bind(this));
 }
