@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import './App.css';
-
+import PS3Controller from './PS3Controller.js';
 import mqtt from "mqtt";
 
 var options = {
@@ -24,8 +24,8 @@ function App() {
     note = message.toString();
     // Updates React state with message 
     setMesg(note);
-    console.log(note);
-    });
+    console.log(note); 
+   });
 
   // Sets default React state 
   const [mesg, setMesg] = useState(<Fragment><em>nothing heard</em></Fragment>);
@@ -33,6 +33,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+        <PS3Controller />
         <h1>A taste of MQTT in React</h1>
         <p>The message is: {mesg}</p>
       </header>
