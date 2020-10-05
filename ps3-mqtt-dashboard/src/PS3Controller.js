@@ -10,6 +10,10 @@ export default function PS3Controller({directionFlags, namedFlags}) {
   const [dirRight, setDirRight] = useState(false);
   const [start, setStart] = useState(false);
   const [select, setSelect] = useState(false);
+  const [btnUp, setBtnUp] = useState(false);
+  const [btnDown, setBtnDown] = useState(false);
+  const [btnLeft, setBtnLeft] = useState(false);
+  const [btnRight, setBtnRight] = useState(false);
 
   useEffect(() => {
     directionFlags[0] === '1' ? setDirLeft(true) : setDirLeft(false);
@@ -20,6 +24,14 @@ export default function PS3Controller({directionFlags, namedFlags}) {
     directionFlags[7] === '1' ? setSelect(true) : setSelect(false);
 
   }, [directionFlags])
+
+  useEffect(() => {
+    namedFlags[0] === '1' ? setBtnLeft(true) : setBtnLeft(false);
+    namedFlags[1] === '1' ? setBtnDown(true) : setBtnDown(false);
+    namedFlags[2] === '1' ? setBtnRight(true) : setBtnRight(false);
+    namedFlags[3] === '1' ? setBtnUp(true) : setBtnUp(false);
+
+  }, [namedFlags])
 
   const calcDirectionVertical = (axe) => {
     // Up
@@ -51,10 +63,10 @@ export default function PS3Controller({directionFlags, namedFlags}) {
             directionDown={dirDown}
             directionLeft={dirLeft}
             directionRight={dirRight}
-            buttonDown={false}
-            buttonRight={false}
-            buttonLeft={false}
-            buttonUp={false}
+            buttonDown={btnDown}
+            buttonRight={btnRight}
+            buttonLeft={btnLeft}
+            buttonUp={btnUp}
             select={select}
             start={start}
             analogLeft={false}
