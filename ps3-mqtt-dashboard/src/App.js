@@ -4,17 +4,15 @@ import './App.css';
 import mqtt from "mqtt";
 
 var options = {
-    port: '1833',
-    host: '192.168.1.107',
     username: 'koiserve',
     password: 'Tarnoff',
 };
-var client  = mqtt.connect(options);
+var client  = mqtt.connect('ws://192.168.1.107:9001/', options);
 
 client.on('connect', function () {
-  client.subscribe('sub/ack', function (err) {
+  client.subscribe('pub/data', function (err) {
     if (!err) {
-      client.publish('sub/ack', 'Hello mqtt')
+      client.publish('pub/data', 'Hello mqtt')
     }
   })
 })
@@ -27,7 +25,6 @@ function App() {
     // Updates React state with message 
     setMesg(note);
     console.log(note);
-    client.end();
     });
 
   // Sets default React state 
