@@ -28,15 +28,15 @@ function App() {
    });
 
   // Sets default React state 
-  const [mesg, setMesg] = useState(<Fragment><em>nothing heard</em></Fragment>);
+  const [mesg, setMesg] = useState("Nothing heard");
 
   return (
     <div className="App">
       <header className="App-header">
-        <PS3Controller />
-        <h1>A taste of MQTT in React</h1>
-        <p>The message is: {mesg}</p>
-      </header>
+        <h1>PS3 Controller via MQTT</h1>
+        <PS3Controller directionFlags={mesg.includes(':') ? mesg.split(':')[0] : '00000000'} namedFlags={mesg.includes(':') ? mesg.split(':')[1] : '00000000'} />
+        <p>The message is: {mesg}</p
+>      </header>
     </div>
   );
 }
