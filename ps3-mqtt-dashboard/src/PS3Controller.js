@@ -3,6 +3,11 @@ import PS3ControllerSvg from "./PS3ControllerSvg.js";
 
 
 export default function PS3Controller({directionFlags, namedFlags, leftAnalogHoriz, leftAnalogVert, rightAnalogHoriz, rightAnalogVert}) {
+  const upperLimVert = 130;
+  const lowerLimVert = 120;
+  const upperLimHoriz = 140;
+  const lowerLimHoriz = 130;
+
   const [dirUp, setDirUp] = useState(false);
   const [dirDown, setDirDown] = useState(false);
   const [dirLeft, setDirLeft] = useState(false);
@@ -39,7 +44,7 @@ export default function PS3Controller({directionFlags, namedFlags, leftAnalogHor
   useEffect(() => {
     setLeftHoriz(leftAnalogHoriz);
     setLeftVert(leftAnalogVert);
-    if(analogLeft === false && leftAnalogHoriz < 125 || leftAnalogHoriz > 145 || leftAnalogVert < 115 || leftAnalogVert > 135) {
+    if(analogLeft === false && leftAnalogHoriz < lowerLimHoriz || leftAnalogHoriz > upperLimHoriz || leftAnalogVert < lowerLimVert || leftAnalogVert > upperLimVert) {
       setAnalogLeft(true);
     } else if(analogLeft === true) setAnalogLeft(false);
   }, [leftAnalogHoriz, leftAnalogVert])
@@ -47,51 +52,29 @@ export default function PS3Controller({directionFlags, namedFlags, leftAnalogHor
   useEffect(() => {
     setRightHoriz(rightAnalogHoriz);
     setRightVert(rightAnalogVert);
-    if(analogRight === false && rightAnalogHoriz < 125 || rightAnalogHoriz > 145 || rightAnalogVert < 115 || rightAnalogVert > 135) {
+    if(analogRight === false && rightAnalogHoriz < lowerLimHoriz || rightAnalogHoriz > upperLimHoriz || rightAnalogVert < lowerLimVert || rightAnalogVert > upperLimVert) {
       setAnalogRight(true);
     } else if(analogRight === true) setAnalogRight(false);
   }, [rightAnalogHoriz, rightAnalogVert])
 
-  const calcDirectionVerticalLeft = (axe) => {
+  const calcDirectionVertical = (axe) => {
     // Up
-    if (axe < 115) {
+    if (axe < lowerLimVert) {
       return "up";
     }
     // Down
-    if (axe > 135) {
+    if (axe > upperLimVert) {
       return "down";
     }
   };
 
-  const calcDirectionHorizontalLeft = (axe) => {
+  const calcDirectionHorizontal = (axe) => {
     // Left
-    if (axe < 125) {
+    if (axe < lowerLimHoriz) {
       return "left";
     }
     // Right
-    if (axe > 145) {
-      return "right";
-    }
-  };
-
-  const calcDirectionVerticalRight = (axe) => {
-    // Up
-    if (axe < 115) {
-      return "up";
-    }
-    // Down
-    if (axe > 135) {
-      return "down";
-    }
-  };
-
-  const calcDirectionHorizontalRight = (axe) => {
-    // Left
-    if (axe < 125) {
-      return "left";
-    }
-    // Right
-    if (axe > 145) {
+    if (axe > upperLimHoriz) {
       return "right";
     }
   };
@@ -114,12 +97,12 @@ export default function PS3Controller({directionFlags, namedFlags, leftAnalogHor
             analogLeft={analogLeft}
             analogRight={analogRight}
             analogLeftDirection={[
-              calcDirectionHorizontalLeft(leftHoriz),
-              calcDirectionVerticalLeft(leftVert)
+              calcDirectionHorizontal(leftHoriz),
+              calcDirectionVertical(leftVert)
             ]}
             analogRightDirection={[
-              calcDirectionHorizontalRight(rightHoriz),
-              calcDirectionVerticalRight(rightVert)
+              calcDirectionHorizontal(rightHoriz),
+              calcDirectionVertical(rightVert)
             ]}
           />
     </div>
