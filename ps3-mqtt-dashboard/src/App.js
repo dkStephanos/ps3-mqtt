@@ -34,7 +34,14 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>PS3 Controller via MQTT</h1>
-        <PS3Controller directionFlags={mesg.includes(':') ? mesg.split(':')[0] : '00000000'} namedFlags={mesg.includes(':') ? mesg.split(':')[1] : '00000000'} />
+        <PS3Controller
+          directionFlags={mesg.includes(':') ? mesg.split(':')[0] : '00000000'}
+          namedFlags={mesg.includes(':') ? mesg.split(':')[1] : '00000000'}
+          leftAnalogHoriz={mesg.includes(':') ? parseInt(mesg.split(':')[2]) : 135}
+          leftAnalogVert={mesg.includes(':') ? parseInt(mesg.split(':')[3]) : 125}
+          rightAnalogHoriz={mesg.includes(':') ? parseInt(mesg.split(':')[4]) : 135}
+          rightAnalogVert={mesg.includes(':') ? parseInt(mesg.split(':')[5]) : 125}
+        />
         <p>The message is: {mesg}</p
 >      </header>
     </div>
