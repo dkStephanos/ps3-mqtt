@@ -1,5 +1,7 @@
 import * as React from "react";
 
+//SVG implementation borrowed from Ryo Suke, https://whoisryosuke.com/blog/2020/adding-game-controller-input-to-react/
+
 function GamepadSvg({
   buttonLeft,
   buttonUp,
