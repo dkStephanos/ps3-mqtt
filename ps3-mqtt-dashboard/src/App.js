@@ -12,7 +12,7 @@ var client  = mqtt.connect('ws://192.168.1.107:9001/', options);
 client.on('connect', function () {
   client.subscribe('pub/data', function (err) {
     if (!err) {
-      client.publish('pub/data', 'Hello mqtt')
+      client.publish('pub/data', 'Connected to MQTT broker')
     }
   })
 })
