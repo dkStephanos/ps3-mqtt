@@ -33,6 +33,14 @@ device.read(device.inFunction.bind(device))
 //Here we initialize variables to store the bitwise flags for the various inputs we are tracking
 directionButtons = 0;
 namedButtons = 0;
+leftAnalogHoriz = 0;
+leftAnalogVert = 0;
+rightAnalogHoriz = 0;
+rightAnalogVert = 0;
+dataString = "";
+
+//Set the range of specificity for the analog values so we don't overwhelm the broker
+dataRange = 6;
 
 //This is the callback funtion to be run on a succesful read from our usb device
 //It is responisble for logging the results of the read, publishing the data if neccessary, and triggering the next read
@@ -40,19 +48,34 @@ function receiveData(err, data) {
 	if(err) console.log("Error received when receiving data", err);			//Log error with message if the read fails
 	
 	console.log('Recieved data: ', data);			//If the read is succesful, log the recieved data to the console
-
+	
 	//Here, we want to avoid flooding the topic with uneccesarry messages, as the ps3 reads occur very quickly
 	//We achieve this by checking if the newly read data differs from our last read, and only publish if we have new data
-	if(directionButtons !== data[2] || namedButtons !== data[3]) {
+	//For the analog values, we check if we have changed by a value of 5, otherwise the publishes occur too close together
+	if(directionButtons !== data[2] || namedButtons !== data[3] || 
+		(leftAnalogHoriz < data[6] - dataRange || leftAnalogHoriz > data[6] + dataRange ) || (leftAnalogVert < data[7] - dataRange || leftAnalogVert > data[7] + dataRange ) || 
+		(rightAnalogHoriz < data[8] - dataRange || rightAnalogHoriz > data[8] + dataRange ) || (rightAnalogVert < data[9] - dataRange || rightAnalogVert > data[9] + dataRange )) {
 		//Since we care about the various bitwise flags being set, we need to first convert the data to a binary string, adding padding if necessary to ensure we always have 8 bits
-		client.publish('pub/data', data[2].toString(2).padStart(8, '0') + ':' + data[3].toString(2).padStart(8, '0'), function(err) {
+		//The analog measurements are not flags, but actual readings, so they only need to be marshalled and sent
+		//We use colons to deliminate the sections of the message, so they can be split and interpreted by the dashboard
+		dataString = data[2].toString(2).padStart(8, '0') + ':' + data[3].toString(2).padStart(8, '0') + ':' + data[6] + ':' + data[7] + ':' + data[8] + ':' + data[9];
+		
+		//Next, publish the marshalled data to the pub/data topic so it can be read by the dashboard, logging the published dataString or the error if one occurs
+		client.publish('pub/data', dataString, function(err) {
 			if(err) throw "Error description:  " + err;
+			console.log(dataString)
 		});
 	}
 
 	//Set our data variables to the last read data, so we can diff check on the next pass
 	directionButtons = data[2];
 	namedButtons = data[3];
+
+	//Only update our analog values if they move outside the range, otherwise, we will miss a series of small adjustments
+	if(leftAnalogHoriz < data[6] - dataRange || leftAnalogHoriz > data[6] + dataRange ) leftAnalogHoriz = data[6];
+	if(leftAnalogVert < data[7] - dataRange || leftAnalogVert > data[7] + dataRange ) leftAnalogVert = data[7];
+	if(rightAnalogHoriz < data[8] - dataRange || rightAnalogHoriz > data[8] + dataRange ) rightAnalogHoriz = data[8];
+	if(rightAnalogVert < data[9] - dataRange || rightAnalogVert > data[9] + dataRange ) rightAnalogVert = data[9];
 
 	//Trigger the next read
 	this.read(this.inFunction.bind(this));
