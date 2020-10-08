@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import './App.css';
 import PS3Controller from './PS3Controller.js';
+import PS3FlagsKey from './PS3FlagsKey.js';
 import mqtt from "mqtt";
 
 //This object contains the log in info for the mqtt broker -- update to your own settings
@@ -52,8 +53,9 @@ function App() {
           rightAnalogHoriz={mesg.includes(':') ? parseInt(mesg.split(':')[4]) : 135}
           rightAnalogVert={mesg.includes(':') ? parseInt(mesg.split(':')[5]) : 125}
         />
-        <p>The message is: {mesg}</p
->      </header>
+        <p>The message is: {mesg}</p>    
+        <PS3FlagsKey />  
+      </header>
     </div>
   );
 }

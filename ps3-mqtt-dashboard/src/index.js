@@ -6,7 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />		//This is the base app, essentially a wrapper for the dashboard
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );
