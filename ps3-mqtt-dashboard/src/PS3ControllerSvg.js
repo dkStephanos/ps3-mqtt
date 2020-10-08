@@ -1,6 +1,8 @@
 import * as React from "react";
 
 //SVG implementation borrowed from Ryo Suke, https://whoisryosuke.com/blog/2020/adding-game-controller-input-to-react/
+//I didn't write this, but it is essentially a function that returns the svg image
+//It takes a series of inputs corresponding to the various controls on the ps3 controller
 
 function GamepadSvg({
   buttonLeft,
@@ -21,6 +23,7 @@ function GamepadSvg({
   inactiveColor = "#E0E0E0",
   ...props
 }) {
+  //This function takes the position of the analog and converts it into a css transform for the joystick image
   const createTransform = (direction) => {
     switch (direction) {
       case "up":
